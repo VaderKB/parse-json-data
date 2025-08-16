@@ -1,0 +1,161 @@
+{
+    "lambda_trust_policy":  {
+        "Version": "2012-10-17",
+        "Statement": [
+            {
+                "Effect": "Allow",
+                "Principal": {
+                    "Service": "lambda.amazonaws.com"
+                },
+                "Action": "sts:AssumeRole"
+            }
+        ],
+        "Name": "lambda-s3-policy"},
+    "lambda_role_policy": 
+        [
+        {
+            "Version": "2012-10-17",
+            "Statement": [
+                {
+                    "Effect": "Allow",
+                    "Action": "logs:CreateLogGroup",
+                    "Resource": "arn:aws:logs:us-east-1:483151609062:*"
+                },
+                {
+                    "Effect": "Allow",
+                    "Action": [
+                        "logs:CreateLogStream",
+                        "logs:PutLogEvents"
+                    ],
+                    "Resource": [
+                        "arn:aws:logs:us-east-1:483151609062:log-group:/aws/lambda/generate-user-data:*"
+                    ]
+                }
+            ],
+            "Name": "lambda-execution-role"
+        },
+
+        {
+            "Version": "2012-10-17",
+            "Statement": [
+                {
+                    "Effect": "Allow",
+                    "Action": [
+                        "ec2:CreateNetworkInterface",
+                        "ec2:DeleteNetworkInterface",
+                        "ec2:DescribeNetworkInterfaces"
+                    ],
+                    "Resource": "*"
+                }
+            ],
+            "Name": "lambda-vpc-role"
+        },
+
+        {
+            "Version": "2012-10-17",
+            "Statement": [
+                {
+                    "Sid": "VisualEditor0",
+                    "Effect": "Allow",
+                    "Action": "s3:PutObject",
+                    "Resource": "arn:aws:s3:::snowflake-user-data-vader-k/source_user_data/*"
+                }
+            ],
+            "Name": "lambda-s3-role"
+        }
+        ],
+
+    
+    "trust_policy_step_function":  {
+        "Version": "2012-10-17",
+        "Statement": [
+            {
+                "Effect": "Allow",
+                "Principal": {
+                    "Service": "states.amazonaws.com"
+                },
+                "Action": "sts:AssumeRole"
+            }
+        ],
+        "Name": "step-function-role"
+    },
+    "step_function_role_policy": [
+                {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Action": [
+                                "lambda:InvokeFunction"
+                            ],
+                            "Resource": [
+                                "arn:aws:lambda:us-east-1:483151609062:function:${lambda_id}:*"
+                            ]
+                        },
+                        {
+                            "Effect": "Allow",
+                            "Action": [
+                                "lambda:InvokeFunction"
+                            ],
+                            "Resource": [
+                                "arn:aws:lambda:us-east-1:483151609062:function:${lambda_id}"
+                            ]
+                        }
+                    ],
+                    "Name": "lambda-invoke-policy-step-function"
+                },
+                {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Effect": "Allow",
+                        "Action": [
+                            "xray:PutTraceSegments",
+                            "xray:PutTelemetryRecords",
+                            "xray:GetSamplingRules",
+                            "xray:GetSamplingTargets"
+                        ],
+                        "Resource": [
+                            "*"
+                        ]
+                    }
+                ],
+                "Name": "xray-policy-step-function"
+            }
+        ],
+    "trust_policy_eventbridge":  {
+        "Version": "2012-10-17",
+            "Statement": [
+                {
+                    "Effect": "Allow",
+                    "Principal": {
+                        "Service": "scheduler.amazonaws.com"
+                    },
+                    "Action": "sts:AssumeRole",
+                    "Condition": {
+                        "StringEquals": {
+                            "aws:SourceAccount": "483151609062"
+                        }
+                    }
+                }
+            ],
+        "Name": "event-bridge-trust-policy"
+    },
+    "eventbridge_role_policy": [
+        {
+            "Version": "2012-10-17",
+            "Statement": [
+                {
+                    "Effect": "Allow",
+                    "Action": [
+                        "states:StartExecution"
+                    ],
+                    "Resource": [
+                        "${step_function_arn}"
+                    ]
+                }
+            ],
+            "Name": "event-bridge-policy"
+        }
+    ]
+}

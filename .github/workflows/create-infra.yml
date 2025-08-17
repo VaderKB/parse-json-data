@@ -19,7 +19,7 @@ jobs:
             - name: Build Docker Image
               run: docker build -t my-lambda-image .
             - name: Check Python
-              run: docker run --rm my-lambda-image python --version
+              run: docker run --rm --entrypoint python my-lambda-image --version
             - name: Create ECR repo
               run: |
                 aws ecr delete-repository --repository-name my-lambda-repo --force

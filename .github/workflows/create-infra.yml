@@ -29,7 +29,7 @@ jobs:
               with:
                 terraform_version: "1.10.1"
             - name: Create infra
-              run: 
+              run: | 
                 cd iac
                 terraform init
                 terraform apply --auto-approve

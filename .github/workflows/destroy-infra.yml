@@ -1,7 +1,7 @@
 name: Create AWS Infra
 on: 
     workflow_dispatch:
-run-name: Create aws infra
+run-name: Destroy aws infra
 jobs: 
     run-data:
         runs-on: ubuntu-latest

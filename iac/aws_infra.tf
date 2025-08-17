@@ -112,7 +112,7 @@ resource "aws_scheduler_schedule" "scheduler" {
       mode = "OFF"
   }
 
-  schedule_expression = "cron(11 * * * ? *)"
+  schedule_expression = "cron(14 * * * ? *)"
   target {
     arn = aws_sfn_state_machine.generate_data_sm.arn
     role_arn = aws_iam_role.scheduler_role.arn

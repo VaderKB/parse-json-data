@@ -7,7 +7,7 @@ jobs:
         runs-on: ubuntu-latest
         steps: 
             - name: Show val
-              runs: Echo "hello there"
+              run: Echo "hello there"
             - name: Configure AWS Credentials with OIDC
               uses: aws-actions/configure-aws-credentials@v4.3.1
               with:

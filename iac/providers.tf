@@ -12,5 +12,13 @@ terraform {
 # Configure the AWS provider
 provider "aws" {
   region  = "us-east-1" # AWS region
-  profile = "dbxaws"    # AWS CLI profile to use (optional)
+}
+
+
+terraform {
+  backend "s3" {
+    bucket = "snowflake-user-data-vader-k"
+    key    = "iac/state_file/state_file"
+    region = "us-east-1"
+  }
 }

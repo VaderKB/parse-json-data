@@ -19,6 +19,7 @@ jobs:
             - name: Build and Upload docker image to ECR
               run: |
                 docker build -t my-lambda-image .
+                aws ecr delete-repository --repository-name my-lambda-repo --force
                 aws ecr create-repository --repository-name my-lambda-repo --region="us-east-1"
                 aws ecr get-login-password --region "us-east-1" | docker login --username AWS --password-stdin 483151609062.dkr.ecr.us-east-1.amazonaws.com
                 docker tag my-lambda-image:latest 483151609062.dkr.ecr.us-east-1.amazonaws.com/my-lambda-repo:latest
